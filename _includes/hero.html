@@ -3,7 +3,7 @@ This will be displayed on the homepage. Ideally, you want to highlight key goals
 {% endcomment %}
 
 <section class="usa-hero">
-  <div class="grid-container">
+  <div class="grid-container" id="gif">
     <div class="usa-hero__callout">
       <h1 class="usa-hero__heading"><span class="usa-hero__heading--alt">Hero callout:</span>Bring attention to a project priority
       </h1>
@@ -12,3 +12,19 @@ This will be displayed on the homepage. Ideally, you want to highlight key goals
     </div>
   </div>
 </section>
+
+<script>
+  const result = document.getElementById('gif');
+  const logger = document.getElementById('logger');
+
+  document.addEventListener('DOMContentLoaded', (event) => {
+  fetch('https://cfpyapi.app.cloud.gov')
+  .then(response => response.json())
+  .then(data => {
+    result.innerHTML = data[0].body;
+    logger.innerHTML = JSON.stringfy(data);
+  }));
+  .catch((error) => {
+    console.log('Error:', error);
+});
+</script>
