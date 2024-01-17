@@ -2,29 +2,54 @@
 This will be displayed on the homepage. Ideally, you want to highlight key goals of the website
 {% endcomment %}
 
-<section class="usa-hero">
-  <div class="grid-container" id="gif">
+<section class="usa-hero" id="replace_me">
+  <div class="grid-container">
     <div class="usa-hero__callout">
-      <h1 class="usa-hero__heading"><span class="usa-hero__heading--alt">Hero callout:</span>Bring attention to a project priority
+      <h1 class="usa-hero__heading"><span class="usa-hero__heading--alt">API Example:</span>Dynamically load content via an API
       </h1>
-      <p>Support the callout with some short explanatory text. You don’t need more than a couple of sentences.</p>
-      <a class="usa-button" href="javascript:void(0)">Call to action</a>
+      <p>Want to see a new hero image? Click the button below!</p>
+      <a class="usa-button" href="javascript:getAnImageViaAPI()">Get a new image</a>
     </div>
   </div>
 </section>
 
 <script>
-  const result = document.getElementById('gif');
-  const logger = document.getElementById('logger');
+  // I couldn't access this locally myself, so I commented this out for now. We can put it back though.
+  // const remoteAPIURL = "https://cfpyapi.app.cloud.gov";
+  
+  // use this one for local testing, but we should replace it with our own API eventually
+  const remoteAPIURL = "https://picsum.photos/1700/500";
 
-  document.addEventListener('DOMContentLoaded', (event) => {
-  fetch('https://cfpyapi.app.cloud.gov')
-  .then(response => response.json())
-  .then(data => {
-    result.innerHTML = data[0].body;
-    logger.innerHTML = JSON.stringfy(data);
-  }));
-  .catch((error) => {
-    console.log('Error:', error);
-});
+  // slightly clearer naming for the you who comes back to this in 6 months
+  const elementToReplaceBG = document.getElementById('replace_me');
+
+  // set up the function by name so we can call it on load and on button click (Line 11)
+  function getAnImageViaAPI() {
+
+    // always a good practice to define any contants / strings outside of the function itself, at the top of the context, in case you need to update them later :)
+    fetch(remoteAPIURL)
+
+    .then(response => encodeURI(response.url)) 
+    // encodeURI() here does the absolute minimum to escape the string and try to prevent XSS attacks.
+    // the picsum.com API returns an object with a property named 'url'. You might need to use response.json() instead.
+    // I don't know what the cloud.gov response actually looks like, but I can help if this breaks your call.
+    
+    .then(data => {
+      
+      // this should show you the url on the response from the API. 
+      console.log(data);
+      elementToReplaceBG.style.backgroundImage = `url("${data}")`;
+
+    }) // btw no semicolon here. all of these lines that start with .( are chaining something, you don't want to interrupt that with a semicolon
+    .catch((error) => {
+      console.log('Error:', error);
+    });
+  };
+
+  // we can now call the function on load, or any other event we want.
+  document.addEventListener('DOMContentLoaded', (event) => { 
+    getAnImageViaAPI()  
+  });
+
+  
 </script>
